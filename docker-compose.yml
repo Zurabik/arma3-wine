@@ -1,0 +1,66 @@
+version: '2'
+services:
+    arma3w:
+        image: aaaler/steam-wine
+        environment:
+            - STEAM_USERNAME=YOUR_STEAM_LOGIN
+            - STEAM_PASSWORD=YOUR_STEAM_PASSWORD
+            - VALIDATE=0
+            - ARMA3MODS=@Exile;@CUP_Terrains_Core;@CUP_Terrains_Maps;@CBA_A3;@DS_Houses;@CUP_Units;@CUP_Vehicles;@CUP_Weapons;@Zombies_and_Demons;@RZ_Infection;@Extended_Items_Exile;@CDAH_Mod_Pack;
+            - ARMA3SERVERMODS=@ExileServer;@infiSTAR_Exile;
+            - DISPLAY=:1
+            - WINEARCH=win32
+        volumes:
+            - ./profiles:/profiles
+            - ./arma3:/arma3
+            - ./keys:/arma3/keys
+            - ./battleye:/arma3/battleye
+            - /home/aler/.steam:/root/Steam #for 2fac auth
+            - /data/arma3Mods/@Exile:/arma3/@Exile
+            - /data/arma3Mods/@CBA_A3:/arma3/@CBA_A3
+            - /data/arma3Mods/@CUP_Terrains_Core:/arma3/@CUP_Terrains_Core
+            - /data/arma3Mods/@CUP_Terrains_Maps:/arma3/@CUP_Terrains_Maps
+            - /data/arma3Mods/@CUP_Vehicles:/arma3/@CUP_Vehicles
+            - /data/arma3Mods/@CUP_Weapons:/arma3/@CUP_Weapons
+            - /data/arma3Mods/@CUP_Units:/arma3/@CUP_Units
+            - /data/arma3Mods/@Zombies_and_Demons:/arma3/@Zombies_and_Demons
+            - /data/arma3Mods/@RZ_Infection:/arma3/@RZ_Infection
+            - ./@ExileServer:/arma3/@ExileServer
+            - ./@infiSTAR_Exile:/arma3/@infiSTAR_Exile
+            - .wine:/root/.wine
+            - /data/arma3Mods/@DS_Houses:/arma3/@DS_Houses
+            - /data/arma3Mods/@Extended_Items_Exile:/arma3/@Extended_Items_Exile
+            - /data/arma3Mods/@CDAH_Mod_Pack:/arma3/@CDAH_Mod_Pack
+            - ./config.cfg:/arma3/config.cfg
+            - ./basic.cfg:/arma3/basic.cfg
+            - ./Exile.Chernarus.pbo:/arma3/mpmissions/Exile.Chernarus.pbo
+            - /tmp/.X11-unix:/tmp/.X11-unix
+
+        restart: always    
+        ports:
+            - "EXTERNAL_IP_HERE:2301-2306:2301-2306/udp"
+        stdin_open: true
+        tty: true
+
+    novnc:  
+        image: consol/ubuntu-icewm-vnc 
+        environment:
+          # Adjust to your screen size
+          - VNC_COL_DEPTH=16
+          - VNC_PW=CHANGE_ME
+        volumes:
+          - /tmp/.X11-unix:/tmp/.X11-unix 
+        ports:
+          - "127.0.0.1:6901:6901"
+        user: 0:0
+
+    nginx: 
+        image: nginx
+        restart: always
+        volumes:
+          - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+          - ./Exile.Chernarus.pbo:/www/Exile.Chernarus.pbo:ro
+        ports:
+          - "EXTERNAL_IP_HERE:2309:80"
+
+
