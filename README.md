@@ -1,3 +1,7 @@
+При составлениия использовались два проекта:
+https://github.com/BrettMayson/Arma3Server
+https://github.com/aaaler/arma3-wine
+
 0. Build container using files from `dockerfile` directory. i.e.: 
 ```docker build -t steam-wine dockerfile/```
 1. Check settings mentioned in `docker-compose.yml`. At least you need to:
